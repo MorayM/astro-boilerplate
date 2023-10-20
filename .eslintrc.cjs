@@ -1,37 +1,54 @@
+/** @type {import("eslint").Linter.Config} */
 module.exports = {
+  root: true,
   env: {
     node: true,
     es2022: true,
     browser: true,
   },
-  extends: ['eslint:recommended', 'plugin:astro/recommended'],
+  extends: [
+    'airbnb-base',
+    'airbnb-typescript/base',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:astro/recommended',
+    'plugin:astro/jsx-a11y-recommended',
+  ],
+  ignorePatterns: ['dist', 'node_modules', '.eslintrc.cjs'],
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
+    project: ['./tsconfig.json'],
+    extraFileExtensions: ['.astro'],
+    tsconfigRootDir: __dirname,
   },
   rules: {
+    // Enforcing this can cause problems with tree-shaking
+    'import/prefer-default-export': 'off',
+    // Current W3C guidance is that `for` is the preferred way to associate labels with controls
+    'jsx-a11y/label-has-associated-control': ['error', {
+      labelComponents: [],
+      labelAttributes: [],
+      controlComponents: [],
+      assert: 'htmlFor',
+      depth: 25
+    }],
   },
   overrides: [
     {
+      // Define the configuration for `.astro` file.
       files: ['*.astro'],
+      // Allows Astro components to be parsed.
       parser: 'astro-eslint-parser',
+      // Parse the script in `.astro` as TypeScript by adding the following configuration.
+      // It's the setting you need when using TypeScript.
       parserOptions: {
         parser: '@typescript-eslint/parser',
         extraFileExtensions: ['.astro'],
+        project: 'tsconfig.json',
+        tsconfigRootDir: __dirname,
       },
       rules: {},
-    },
-    {
-      files: ['*.ts'],
-      parser: '@typescript-eslint/parser',
-      extends: ['plugin:@typescript-eslint/recommended'],
-      rules: {
-        '@typescript-eslint/no-unused-vars': [
-          'error',
-          { argsIgnorePattern: '^_', destructuredArrayIgnorePattern: '^_' },
-        ],
-        '@typescript-eslint/no-non-null-assertion': 'off',
-      },
     },
     {
       files: ['*.d.ts'],
