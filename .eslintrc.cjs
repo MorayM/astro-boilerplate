@@ -13,7 +13,7 @@ module.exports = {
     'plugin:astro/recommended',
     'plugin:astro/jsx-a11y-recommended',
   ],
-  ignorePatterns: ['dist', 'node_modules', '.eslintrc.cjs'],
+  ignorePatterns: ['dist', 'node_modules', '.eslintrc.cjs', 'astro.config.mjs'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',
@@ -25,6 +25,8 @@ module.exports = {
   rules: {
     // Enforcing this can cause problems with tree-shaking
     'import/prefer-default-export': 'off',
+    // Lint can't always resolve astro's generated files
+    'import/no-unresolved': [2, { ignore: ['astro:.*'] }],
     // Current W3C guidance is that `for` is the preferred way to associate labels with controls
     'jsx-a11y/label-has-associated-control': ['error', {
       labelComponents: [],
